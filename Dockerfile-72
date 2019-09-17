@@ -3,8 +3,8 @@ FROM php:7.2-fpm-alpine
 LABEL maintainer="StevenLei <shanestevenlei@gmail.com>"
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk update --no-cache \
-    && apk add --no-cache --virtual .build-deps \
+    && apk --no-cache update \
+    && apk --no-cache add \
         freetype-dev \
         libmemcached-dev \
         libzip-dev\
@@ -16,7 +16,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN docker-php-ext-install pdo_mysql \
   # Install the PHP gd library
   && docker-php-ext-configure gd \
-    --with-jpeg-dir=/usr/lib \
-    --with-freetype-dir=/usr/include/freetype2 \
+    --with-freetype-dir=/usr/include/ \
+    --with-jpeg-dir=/usr/include/ \
+    --with-png-dir=/usr/include/ \
   && docker-php-ext-install gd \
-  && apk del --no-network .build-deps
+  && rm -rf /var/cache/apk/*
